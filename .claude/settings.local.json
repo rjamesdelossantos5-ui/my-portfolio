@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(Remove-Item -Force public\\\\vite.svg, src\\\\counter.js, src\\\\javascript.svg)",
+      "Bash(New-Item -ItemType Directory -Force src\\\\components, src\\\\pages)",
+      "PowerShell(cd \"c:\\\\Users\\\\rjames\\\\Desktop\\\\Portfolio\"; $proc = Start-Process -FilePath \"npm\" -ArgumentList \"run\",\"dev\" -PassThru -NoNewWindow -RedirectStandardOutput \"$env:TEMP\\\\vite_out.txt\" -RedirectStandardError \"$env:TEMP\\\\vite_err.txt\"; Start-Sleep -Seconds 6; Get-Content \"$env:TEMP\\\\vite_out.txt\",\"$env:TEMP\\\\vite_err.txt\" -ErrorAction SilentlyContinue; Stop-Process -Id $proc.Id -ErrorAction SilentlyContinue)",
+      "Bash(timeout 8 npm run dev)",
+      "Bash(timeout 12 npm run dev)",
+      "Bash(npm run *)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(cd \"c:\\\\Users\\\\rjames\\\\Desktop\\\\Portfolio\" && npm run dev > /tmp/vite.log 2>&1 & *)",
+      "Read(//tmp/**)",
+      "Bash(npx --yes playwright --version)",
+      "Bash(node -e ' *)",
+      "Bash(npx playwright *)"
+    ]
+  }
+}

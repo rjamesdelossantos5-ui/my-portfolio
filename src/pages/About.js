@@ -73,7 +73,7 @@ export function render() {
       <section class="border-b border-white/5 py-20 px-6">
         <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center sm:items-start gap-10 sm:gap-14">
 
-          <!-- Photo placeholder — replace src with your own -->
+          <!-- Photo placeholder — replace src with your own! -->
           <div class="shrink-0 relative">
             <div class="w-40 h-40 sm:w-52 sm:h-52 rounded-2xl overflow-hidden
                         ring-1 ring-white/10 shadow-[0_0_40px_rgba(0,245,255,0.08)]">

@@ -1,3 +1,5 @@
+import { supabase } from '../lib/supabase.js'
+
 const PROCESS_STEPS = [
   {
     step:   '01',
@@ -254,12 +256,29 @@ export function init() {
   emailEl.addEventListener('input', () => { if (!getErrorEl(emailEl).classList.contains('hidden')) validateEmail() })
   msgEl.addEventListener('input',   () => { if (!getErrorEl(msgEl).classList.contains('hidden'))   validateMsg()   })
 
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault()
     if (![validateName(), validateEmail(), validateMsg()].every(Boolean)) return
 
-    submitEl.textContent = 'Message Sent ✓'
+    submitEl.textContent = 'Sending…'
     submitEl.disabled = true
+
+    const { error } = await supabase.from('messages').insert({
+      name:    nameEl.value.trim(),
+      email:   emailEl.value.trim(),
+      message: msgEl.value.trim(),
+    })
+
+    if (error) {
+      submitEl.textContent = 'Send Message'
+      submitEl.disabled = false
+      const errEl = msgEl.closest('.field-group').querySelector('.field-error')
+      errEl.textContent = 'Failed to send — please try again.'
+      errEl.classList.remove('hidden')
+      return
+    }
+
+    submitEl.textContent = 'Message Sent ✓'
     submitEl.classList.replace('bg-[#00f5ff]', 'bg-[#39ff14]')
     form.reset()
 

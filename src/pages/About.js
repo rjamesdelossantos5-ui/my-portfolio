@@ -77,7 +77,7 @@ export function render() {
           <div class="shrink-0 relative">
             <div class="w-40 h-40 sm:w-52 sm:h-52 rounded-2xl overflow-hidden
                         ring-1 ring-white/10 shadow-[0_0_40px_rgba(0,245,255,0.08)]">
-              <img src="src/assets/h.jpg"
+              <img src="/h.jpg"
                    alt="Profile photo — replace with your own"
                    class="w-full h-full object-cover" />
             </div>

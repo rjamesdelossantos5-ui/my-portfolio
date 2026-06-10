@@ -40,8 +40,8 @@ export function render() {
         <div style="width:88px;height:88px;border-radius:1rem;overflow:hidden;
           margin-bottom:2rem;box-shadow:0 0 0 1px rgba(255,255,255,0.08),
           0 0 40px rgba(0,212,255,0.1);">
-          <img src="https://picsum.photos/seed/portrait42/400/400"
-               alt="Profile photo — replace with your own"
+          <img src="/h.jpg"
+               alt="RJ Santos profile photo"
                style="width:100%;height:100%;object-fit:cover;" />
         </div>
 

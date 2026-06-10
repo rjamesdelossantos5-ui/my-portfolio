@@ -466,5 +466,26 @@ export class Game {
     this.canvas.addEventListener('wheel', e => {
       if (this._focused && this.state === 'playing') e.preventDefault()
     }, { passive: false })
+
+    // ── Touch controls ────────────────────────────────────────────────────────
+    // Maps the first touch point to the same mouse-target the player lerps toward.
+    // passive:false + preventDefault stops the touch from scrolling the GSAP layout.
+    const readTouch = e => {
+      const t = e.touches[0]
+      if (!t) return
+      const r = this.canvas.getBoundingClientRect()
+      if (this.player) this.player.setMouseTarget(t.clientX - r.left, t.clientY - r.top)
+    }
+
+    this.canvas.addEventListener('touchstart', e => {
+      if (e.cancelable) e.preventDefault()
+      this._focused = true
+      readTouch(e)
+    }, { passive: false })
+
+    this.canvas.addEventListener('touchmove', e => {
+      if (e.cancelable) e.preventDefault()
+      readTouch(e)
+    }, { passive: false })
   }
 }

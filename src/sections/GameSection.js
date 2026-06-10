@@ -8,7 +8,7 @@ export function render() {
   <span class="section-label">04 — Play</span>
 
   <!-- Game canvas fills the whole section -->
-  <canvas id="game-canvas" style="display:block;width:100%;height:100%;cursor:crosshair;"></canvas>
+  <canvas id="game-canvas" style="display:block;width:100%;height:100%;cursor:crosshair;touch-action:none;"></canvas>
 
   <!-- ── Start screen ───────────────────────────────── -->
   <div id="gs-start" class="game-overlay">
@@ -95,8 +95,9 @@ export function init() {
   // at z-index:10 with inset:0, so canvas mouseenter never fires while overlays
   // are visible. The section element always receives the events.
   const section = document.getElementById('s-game')
-  section.addEventListener('mouseenter', () => game.focus())
-  section.addEventListener('mouseleave', () => game.blur())
+  section.addEventListener('mouseenter',  () => game.focus())
+  section.addEventListener('mouseleave',  () => game.blur())
+  section.addEventListener('touchstart',  () => game.focus(), { passive: true })
 
   // ── Resize ────────────────────────────────────────────────────────────────
   const resizeObserver = new ResizeObserver(() => game._resize())

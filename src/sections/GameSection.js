@@ -1,4 +1,3 @@
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Game } from '../game/Game.js'
 
 export function render() {
@@ -84,21 +83,20 @@ export function init() {
     goKills:          document.getElementById('gs-go-kills'),
   })
 
-  // ── Scroll gating ──────────────────────────────────────────────────────────
-  function disableScroll() {
-    ScrollTrigger.getAll().forEach(st => st.disable())
-    game.focus()
-  }
-  function enableScroll() {
-    ScrollTrigger.getAll().forEach(st => st.enable())
-    game.blur()
-  }
+  // ── Scroll gating ─────────────────────────────────────────────────────────
+  // GSAP horizontal scroll is driven by the vertical scroll bar / wheel events,
+  // not by mouse movement — so we never disable ScrollTrigger (doing so while
+  // pinned snaps the page to Y=0). We only track cursor presence so the game
+  // can block wheel + arrow-key scroll while the cursor is over the section.
+  game.onScrollDisable = () => game.focus()
+  game.onScrollEnable  = () => game.blur()
 
-  game.onScrollDisable = disableScroll
-  game.onScrollEnable  = enableScroll
-
-  canvas.addEventListener('mouseenter', disableScroll)
-  canvas.addEventListener('mouseleave', enableScroll)
+  // Use the section, not the canvas — the .game-overlay sits above the canvas
+  // at z-index:10 with inset:0, so canvas mouseenter never fires while overlays
+  // are visible. The section element always receives the events.
+  const section = document.getElementById('s-game')
+  section.addEventListener('mouseenter', () => game.focus())
+  section.addEventListener('mouseleave', () => game.blur())
 
   // ── Resize ────────────────────────────────────────────────────────────────
   const resizeObserver = new ResizeObserver(() => game._resize())

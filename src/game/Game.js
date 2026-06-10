@@ -450,9 +450,10 @@ export class Game {
 
     document.addEventListener('keydown', e => {
       this.keys[e.key.toLowerCase()] = true
-      // Prevent page scroll only while game is focused and running
-      if (this._focused && this.state === 'playing') {
-        const blocked = ['arrowup','arrowdown','arrowleft','arrowright',' ','w','a','s','d']
+      // Block page-scroll keys for the duration of a run.
+      // Keyboard controls should work even if the cursor drifts off the section.
+      if (this.state === 'playing') {
+        const blocked = ['arrowup','arrowdown','arrowleft','arrowright',' ']
         if (blocked.includes(e.key.toLowerCase())) e.preventDefault()
       }
     })

@@ -319,6 +319,29 @@ body {
 }
 .ping { animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; }
 
+/* ─── Magnetic text layer ────────────────────────────────────── */
+/*
+ * .mag-text is injected by magnetic.js as a wrapper around button/link children.
+ * display:inline-block keeps it as a single translatable unit.
+ * pointer-events:none prevents it from stealing hover from the parent element.
+ */
+.mag-text {
+  display: inline-block;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ─── Kinetic headings ───────────────────────────────────────── */
+/*
+ * font-variation-settings is set directly via JS.
+ * Explicitly allow the property to transition via the browser compositor
+ * where supported (Chrome 111+).
+ */
+.display-xl,
+.display-lg {
+  font-variation-settings: 'wght' 700;
+}
+
 /* ─── Line clamp ─────────────────────────────────────────────── */
 .clamp-2 {
   display: -webkit-box;

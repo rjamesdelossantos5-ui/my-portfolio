@@ -8,6 +8,8 @@ import { render as renderAbout, init as initAbout }         from './sections/Abo
 import { render as renderProjects, init as initProjects }   from './sections/Projects.js'
 import { render as renderCollabs, init as initCollabs }     from './sections/Collaborators.js'
 import { render as renderContact, init as initContact }     from './sections/Contact.js'
+import { initKinetic }  from './effects/kinetic.js'
+import { initMagnetic } from './effects/magnetic.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -49,4 +51,15 @@ gsap.to(track, {
 
 // ─── Nav scroll-seek init ─────────────────────────────────────────────────────
 // Wait one tick so ScrollTrigger has calculated document height
-requestAnimationFrame(() => initNav(sections))
+requestAnimationFrame(() => {
+  initNav(sections)
+
+  // ── Premium interaction effects ──────────────────────────────────────────
+  // Kinetic: ties Syne's variable wght axis to scroll velocity via GSAP ticker
+  initKinetic()
+
+  // Magnetic: wraps button children in .mag-text spans (idempotent),
+  // then runs a single rAF-throttled mousemove loop for all registered elements.
+  // Must run after all section inits so every button/card is in the DOM.
+  initMagnetic()
+})

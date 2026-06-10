@@ -1,62 +1,52 @@
 import './style.css'
-import { Navbar, updateActiveNavLink, initNavbar } from './components/Navbar.js'
-import { Footer } from './components/Footer.js'
-import { init3DBackground, destroy3DBackground } from './components/3DBackground.js'
-import * as HomePage    from './pages/Home.js'
-import * as AboutPage   from './pages/About.js'
-import * as ProjectsPage from './pages/Projects.js'
-import * as ContactPage from './pages/Contact.js'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const routes = {
-  '#/':         HomePage,
-  '#/about':    AboutPage,
-  '#/projects': ProjectsPage,
-  '#/contact':  ContactPage,
-}
+import { render as renderNav, init as initNav }             from './components/Navbar.js'
+import { render as renderHero, init as initHero }           from './sections/Hero.js'
+import { render as renderAbout, init as initAbout }         from './sections/About.js'
+import { render as renderProjects, init as initProjects }   from './sections/Projects.js'
+import { render as renderCollabs, init as initCollabs }     from './sections/Collaborators.js'
+import { render as renderContact, init as initContact }     from './sections/Contact.js'
 
-// ─── Shell (rendered once) ────────────────────────────────────────────────────
+gsap.registerPlugin(ScrollTrigger)
+
+// ─── Build DOM ────────────────────────────────────────────────────────────────
 document.querySelector('#app').innerHTML = `
-  <canvas id="bg-canvas"></canvas>
-  ${Navbar()}
-  <div id="page-content" class="pt-20 min-h-screen flex flex-col">
-    <main id="main-view" class="flex-1"></main>
-    ${Footer()}
+  ${renderNav()}
+  <div class="sections-track">
+    ${renderHero()}
+    ${renderAbout()}
+    ${renderProjects()}
+    ${renderCollabs()}
+    ${renderContact()}
   </div>
 `
-initNavbar()
 
-// ─── Router ───────────────────────────────────────────────────────────────────
-function getRoute() {
-  const hash = window.location.hash || '#/'
-  return hash in routes ? hash : '#/'
-}
+// ─── Init section JS ──────────────────────────────────────────────────────────
+initHero()
+initAbout()
+initProjects()
+initCollabs()
+initContact()
 
-let bgActive = false
+// ─── GSAP Horizontal Scroll ───────────────────────────────────────────────────
+const track    = document.querySelector('.sections-track')
+const sections = gsap.utils.toArray('.section')
 
-function render() {
-  const route = getRoute()
-  const page  = routes[route]
-  const main  = document.getElementById('main-view')
+gsap.to(track, {
+  x: () => -(track.scrollWidth - window.innerWidth),
+  ease: 'none',
+  scrollTrigger: {
+    trigger:            track,
+    pin:                true,
+    scrub:              1,
+    start:              'top top',
+    end:                () => `+=${track.scrollWidth - window.innerWidth}`,
+    invalidateOnRefresh: true,
+  },
+})
 
-  main.innerHTML = page.render()
-  page.init?.()
-
-  updateActiveNavLink(route)
-  window.scrollTo({ top: 0, behavior: 'instant' })
-
-  // 3D canvas lifecycle — only on home
-  const canvas = document.getElementById('bg-canvas')
-  const onHome = route === '#/'
-  canvas.style.display = onHome ? 'block' : 'none'
-
-  if (onHome && !bgActive) {
-    init3DBackground(canvas)
-    bgActive = true
-  } else if (!onHome && bgActive) {
-    destroy3DBackground()
-    bgActive = false
-  }
-}
-
-window.addEventListener('hashchange', render)
-window.addEventListener('load', render)
+// ─── Nav scroll-seek init ─────────────────────────────────────────────────────
+// Wait one tick so ScrollTrigger has calculated document height
+requestAnimationFrame(() => initNav(sections))

@@ -1,104 +1,79 @@
-const NAV_LINKS = [
-  { label: 'Home',     href: '#/' },
-  { label: 'About',    href: '#/about' },
-  { label: 'Projects', href: '#/projects' },
-  { label: 'Contact',  href: '#/contact' },
+const LINKS = [
+  { label: 'Home',          index: 0 },
+  { label: 'About',         index: 1 },
+  { label: 'Projects',      index: 2 },
+  { label: 'Collaborators', index: 3 },
+  { label: 'Contact',       index: 4 },
 ]
 
-export function Navbar() {
+export function render() {
   return `
-    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50
-                            bg-[#0a0a0f]/85 backdrop-blur-md border-b border-white/5">
-      <div class="max-w-6xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between">
-
-        <a href="#/" class="font-mono text-sm font-bold tracking-widest uppercase
-                            text-[#00f5ff] hover:opacity-75 transition-opacity duration-200">
-          RJ<span class="text-white">Santos</span>
-        </a>
-
-        <!-- Desktop links -->
-        <ul class="hidden sm:flex items-center gap-8 list-none m-0 p-0">
-          ${NAV_LINKS.map(({ label, href }) => `
-            <li>
-              <a href="${href}" data-route="${href}"
-                 class="nav-link relative text-sm font-medium tracking-wide text-gray-400
-                        hover:text-[#00f5ff] transition-colors duration-200
-                        after:absolute after:bottom-[-3px] after:left-0
-                        after:h-px after:w-0 after:bg-[#00f5ff]
-                        after:transition-[width] after:duration-300
-                        hover:after:w-full">
-                ${label}
-              </a>
-            </li>
-          `).join('')}
-        </ul>
-
-        <!-- Hamburger (mobile) -->
-        <button id="nav-toggle"
-                class="sm:hidden text-gray-400 hover:text-white transition-colors p-1"
-                aria-label="Toggle navigation" aria-expanded="false">
-          <svg id="icon-open"  width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-            <line x1="3" y1="6"  x2="19" y2="6"/>
-            <line x1="3" y1="11" x2="19" y2="11"/>
-            <line x1="3" y1="16" x2="19" y2="16"/>
-          </svg>
-          <svg id="icon-close" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" class="hidden">
-            <line x1="4" y1="4" x2="18" y2="18"/>
-            <line x1="18" y1="4" x2="4" y2="18"/>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Mobile dropdown -->
-      <div id="mobile-menu"
-           class="sm:hidden hidden border-t border-white/5 bg-[#0a0a0f]/95 backdrop-blur-md">
-        <ul class="flex flex-col list-none m-0 p-0 px-6 py-4 gap-1">
-          ${NAV_LINKS.map(({ label, href }) => `
-            <li>
-              <a href="${href}" data-route="${href}"
-                 class="nav-link block py-2.5 text-sm font-medium text-gray-400
-                        hover:text-[#00f5ff] transition-colors duration-200 border-b border-white/5 last:border-0">
-                ${label}
-              </a>
-            </li>
-          `).join('')}
-        </ul>
-      </div>
-    </nav>
-  `
+<header id="site-nav">
+  <div id="progress-bar"></div>
+  <div class="nav-inner">
+    <button class="nav-logo nav-link" data-index="0">
+      RJ<span style="color:#FF4757;">.</span>
+    </button>
+    <ul class="nav-links">
+      ${LINKS.map(({ label, index }) => `
+        <li>
+          <button class="nav-link-btn nav-link" data-index="${index}">
+            ${label}
+          </button>
+        </li>
+      `).join('')}
+    </ul>
+    <button class="nav-hire nav-link" data-index="4">Hire Me</button>
+  </div>
+</header>`
 }
 
-export function initNavbar() {
-  const toggle  = document.getElementById('nav-toggle')
-  const menu    = document.getElementById('mobile-menu')
-  const iconOpen  = document.getElementById('icon-open')
-  const iconClose = document.getElementById('icon-close')
+export function init(sections) {
+  const progressBar = document.getElementById('progress-bar')
+  const navLinks    = document.querySelectorAll('.nav-link[data-index]')
 
-  toggle?.addEventListener('click', () => {
-    const open = menu.classList.toggle('hidden')
-    iconOpen.classList.toggle('hidden', !open)
-    iconClose.classList.toggle('hidden', open)
-    toggle.setAttribute('aria-expanded', String(!open))
+  function scrollToSection(index) {
+    const track = document.querySelector('.sections-track')
+    if (!track) return
+    const maxX = track.scrollWidth - window.innerWidth
+    const maxY = document.documentElement.scrollHeight - window.innerHeight
+    if (maxX <= 0) return
+    const targetY = (index * window.innerWidth / maxX) * maxY
+    window.scrollTo({ top: targetY, behavior: 'smooth' })
+  }
+
+  navLinks.forEach(btn => {
+    btn.addEventListener('click', () => {
+      scrollToSection(parseInt(btn.dataset.index, 10))
+    })
   })
 
-  // Close mobile menu on any nav link click
-  menu?.addEventListener('click', e => {
-    if (e.target.closest('a')) {
-      menu.classList.add('hidden')
-      iconOpen.classList.remove('hidden')
-      iconClose.classList.add('hidden')
-      toggle?.setAttribute('aria-expanded', 'false')
+  function onScroll() {
+    const maxY = document.documentElement.scrollHeight - window.innerHeight
+    const progress = maxY > 0 ? window.scrollY / maxY : 0
+
+    if (progressBar) {
+      progressBar.style.transform = `scaleX(${progress})`
     }
-  })
-}
 
-export function updateActiveNavLink(route) {
-  document.querySelectorAll('.nav-link').forEach(link => {
-    const active = link.dataset.route === route
-    link.classList.toggle('text-[#00f5ff]', active)
-    link.classList.toggle('text-gray-400',  !active)
-    // Keep underline on active
-    if (active) link.classList.add('after:w-full')
-    else        link.classList.remove('after:w-full')
-  })
+    // Determine active section
+    const track = document.querySelector('.sections-track')
+    if (!track) return
+    const maxX = track.scrollWidth - window.innerWidth
+    const currentX = maxX > 0 ? progress * maxX : 0
+
+    let activeIdx = 0
+    sections.forEach((section, i) => {
+      if (section.offsetLeft <= currentX + window.innerWidth * 0.5) {
+        activeIdx = i
+      }
+    })
+
+    document.querySelectorAll('.nav-link-btn').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.index, 10) === activeIdx)
+    })
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
 }

@@ -13,7 +13,7 @@ const COLLABS = [
     role:   'Mid Only Lang',
     tag:    'Asa sa akai ko',
     desc:   'Marcus handles infrastructure-as-code for all our shared projects — zero-downtime Kubernetes deploys, IaC pipelines, and SRE best practices.',
-    img:    '/gab.jpg',
+    img:    '/gab1.jpg',
     accent: '#00D4FF',
     handle: '@marcus.ops',
   },

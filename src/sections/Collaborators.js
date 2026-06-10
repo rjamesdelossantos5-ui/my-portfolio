@@ -78,51 +78,54 @@ export function render() {
       </p>
     </div>
 
-    <!-- 5 cards -->
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;
+    <!-- Cards — columns scale automatically with array length -->
+    <div style="display:grid;grid-template-columns:repeat(${COLLABS.length},1fr);gap:1rem;
       flex:1;max-height:calc(100vh - 18rem);">
-      ${COLLABS.map(({ name, role, tag, desc, img, accent, handle }) => `
-        <div class="glass collab-card"
-             style="display:flex;flex-direction:column;overflow:hidden;
+      ${COLLABS.map(({ name, role, tag, img, accent, handle }) => `
+        <div class="collab-card"
+             style="position:relative;overflow:hidden;border-radius:1.25rem;
                cursor:default;transition:transform 0.3s,box-shadow 0.3s;"
              data-accent="${accent}">
 
-          <!-- Portrait -->
-          <div style="position:relative;height:48%;overflow:hidden;
-            border-radius:1.25rem 1.25rem 0 0;flex-shrink:0;">
-            <img src="${img}" alt="${name}"
-                 style="width:100%;height:100%;object-fit:cover;object-position:top;
-                   transition:transform 0.5s;" class="collab-img" loading="lazy" />
-            <div style="position:absolute;inset:0;
-              background:linear-gradient(to top,rgba(6,12,24,0.75) 0%,transparent 55%);"></div>
-            <!-- Specialty tag -->
-            <span style="position:absolute;top:0.625rem;left:0.625rem;
-              font-family:'Inter',sans-serif;font-size:0.58rem;font-weight:600;
-              letter-spacing:0.1em;text-transform:uppercase;
-              padding:0.2rem 0.55rem;border-radius:100px;
-              color:${accent};background:${accent}18;border:1px solid ${accent}44;">
-              ${tag}
-            </span>
-          </div>
+          <!-- Full-bleed portrait image -->
+          <img src="${img}" alt="${name}"
+               style="position:absolute;inset:0;width:100%;height:100%;
+                 object-fit:cover;object-position:top center;
+                 transition:transform 0.55s ease;" class="collab-img" loading="lazy" />
 
-          <!-- Info -->
-          <div style="display:flex;flex-direction:column;padding:0.875rem 1rem;gap:0.5rem;flex:1;">
-            <div>
-              <h3 style="font-family:'Syne',sans-serif;font-weight:700;
-                color:#fff;font-size:0.95rem;line-height:1.2;margin-bottom:0.2rem;">
-                ${name}
-              </h3>
-              <p style="font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;
-                letter-spacing:0.05em;color:${accent};">${role}</p>
-            </div>
-            <p style="font-family:'Inter',sans-serif;font-size:0.72rem;font-weight:300;
-              color:rgba(255,255,255,0.35);line-height:1.65;flex:1;" class="clamp-3">
-              ${desc}
-            </p>
+          <!-- Gradient: strong at bottom for text, subtle vignette at top -->
+          <div style="position:absolute;inset:0;pointer-events:none;
+            background:linear-gradient(
+              to top,
+              rgba(6,12,24,0.96) 0%,
+              rgba(6,12,24,0.55) 30%,
+              rgba(6,12,24,0.1)  55%,
+              transparent        75%
+            );"></div>
+
+          <!-- Accent glow bar at very bottom edge -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:2px;
+            background:${accent};opacity:0.6;pointer-events:none;
+            box-shadow:0 0 12px ${accent};"></div>
+
+          <!-- Specialty tag — top-left -->
+          <span style="position:absolute;top:0.75rem;left:0.75rem;
+            font-family:'Inter',sans-serif;font-size:0.58rem;font-weight:600;
+            letter-spacing:0.1em;text-transform:uppercase;
+            padding:0.22rem 0.6rem;border-radius:100px;
+            color:${accent};background:rgba(6,12,24,0.55);
+            border:1px solid ${accent}55;backdrop-filter:blur(6px);">
+            ${tag}
+          </span>
+
+          <!-- Name / role / handle — pinned to bottom -->
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:1rem 1rem 0.9rem;">
+            <h3 style="font-family:'Syne',sans-serif;font-weight:700;color:#fff;
+              font-size:0.95rem;line-height:1.2;margin-bottom:0.2rem;">${name}</h3>
+            <p style="font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;
+              letter-spacing:0.05em;color:${accent};margin-bottom:0.25rem;">${role}</p>
             <p style="font-family:'Inter',sans-serif;font-size:0.62rem;
-              font-weight:400;color:rgba(255,255,255,0.18);margin-top:auto;">
-              ${handle}
-            </p>
+              color:rgba(255,255,255,0.25);">${handle}</p>
           </div>
         </div>
       `).join('')}

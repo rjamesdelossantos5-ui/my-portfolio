@@ -342,6 +342,76 @@ body {
   font-variation-settings: 'wght' 700;
 }
 
+/* ─── Game section ───────────────────────────────────────────── */
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 10, 20, 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 10;
+}
+
+.game-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 3rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  max-width: 520px;
+  width: 90%;
+}
+
+.upgrade-cards {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.upgrade-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  min-width: 130px;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+  color: #fff;
+}
+.upgrade-card:hover {
+  background: rgba(168, 255, 62, 0.09);
+  border-color: rgba(168, 255, 62, 0.35);
+  transform: translateY(-3px);
+}
+
+.upgrade-icon  { font-size: 1.6rem; }
+.upgrade-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+.upgrade-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  line-height: 1.4;
+}
+
 /* ─── Line clamp ─────────────────────────────────────────────── */
 .clamp-2 {
   display: -webkit-box;

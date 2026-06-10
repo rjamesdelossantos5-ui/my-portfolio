@@ -7,6 +7,7 @@ import { render as renderHero, init as initHero }           from './sections/Her
 import { render as renderAbout, init as initAbout }         from './sections/About.js'
 import { render as renderProjects, init as initProjects }   from './sections/Projects.js'
 import { render as renderCollabs, init as initCollabs }     from './sections/Collaborators.js'
+import { render as renderGame,    init as initGame }        from './sections/GameSection.js'
 import { render as renderContact, init as initContact }     from './sections/Contact.js'
 import { initKinetic }  from './effects/kinetic.js'
 import { initMagnetic } from './effects/magnetic.js'
@@ -21,6 +22,7 @@ document.querySelector('#app').innerHTML = `
     ${renderAbout()}
     ${renderProjects()}
     ${renderCollabs()}
+    ${renderGame()}
     ${renderContact()}
   </div>
 `
@@ -30,6 +32,7 @@ initHero()
 initAbout()
 initProjects()
 initCollabs()
+initGame()
 initContact()
 
 // ─── GSAP Horizontal Scroll ───────────────────────────────────────────────────

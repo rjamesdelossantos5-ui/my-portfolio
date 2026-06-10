@@ -3,7 +3,8 @@ const LINKS = [
   { label: 'About',         index: 1 },
   { label: 'Projects',      index: 2 },
   { label: 'Collaborators', index: 3 },
-  { label: 'Contact',       index: 4 },
+  { label: 'Play',          index: 4 },
+  { label: 'Contact',       index: 5 },
 ]
 
 export function render() {
@@ -23,7 +24,7 @@ export function render() {
         </li>
       `).join('')}
     </ul>
-    <button class="nav-hire nav-link" data-index="4">Hire Me</button>
+    <button class="nav-hire nav-link" data-index="5">Hire Me</button>
   </div>
 </header>`
 }

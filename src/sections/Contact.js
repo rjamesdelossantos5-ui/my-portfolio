@@ -5,7 +5,7 @@ export function render() {
 <section class="section" id="s-contact"
   style="background:linear-gradient(135deg,#080C18 0%,#0C0A1A 100%);">
 
-  <span class="section-label">04 — Contact</span>
+  <span class="section-label">05 — Contact</span>
 
   <div style="height:100%;display:flex;align-items:center;padding:0 5rem;padding-top:4rem;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;
@@ -85,7 +85,8 @@ export function render() {
                 Name
               </label>
               <input type="text" id="cf-name" name="name"
-                     placeholder="Your name" autocomplete="name" class="cf-input" />
+                     placeholder="Your name" autocomplete="name" class="cf-input"
+                     maxlength="100" />
               <p class="field-error" style="display:none;color:#FF4757;
                 font-family:'Inter',sans-serif;font-size:0.65rem;margin-top:0.35rem;"></p>
             </div>
@@ -95,7 +96,8 @@ export function render() {
                 Email
               </label>
               <input type="email" id="cf-email" name="email"
-                     placeholder="you@domain.com" autocomplete="email" class="cf-input" />
+                     placeholder="you@domain.com" autocomplete="email" class="cf-input"
+                     maxlength="254" />
               <p class="field-error" style="display:none;color:#FF4757;
                 font-family:'Inter',sans-serif;font-size:0.65rem;margin-top:0.35rem;"></p>
             </div>
@@ -108,10 +110,16 @@ export function render() {
             </label>
             <textarea id="cf-message" name="message" rows="5"
                       placeholder="Tell me about your project, role, or idea…"
-                      class="cf-input" style="resize:none;"></textarea>
+                      class="cf-input" style="resize:none;" maxlength="2000"></textarea>
             <p class="field-error" style="display:none;color:#FF4757;
               font-family:'Inter',sans-serif;font-size:0.65rem;margin-top:0.35rem;"></p>
           </div>
+
+          <!-- Honeypot: invisible to real users; bots fill it automatically -->
+          <input type="text" id="cf-website" name="website" tabindex="-1"
+                 autocomplete="off" aria-hidden="true"
+                 style="position:absolute;left:-9999px;width:1px;height:1px;
+                        opacity:0;pointer-events:none;" />
 
           <button type="submit" id="cf-submit" class="btn-primary"
                   style="width:100%;justify-content:center;">
@@ -154,7 +162,11 @@ export function init() {
     a.addEventListener('mouseleave', () => { a.style.color = 'rgba(255,255,255,0.35)' })
   })
 
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+  const honeyEl  = document.getElementById('cf-website')
+  let   lastSubmit = 0
+  const COOLDOWN   = 30_000
 
   function errEl(input) {
     return input.closest('.field-group').querySelector('.field-error')
@@ -174,11 +186,26 @@ export function init() {
     input.style.borderColor = ''
   }
 
-  const vName  = () => { if (!nameEl.value.trim())         { setError(nameEl,  'Name is required.');           return false } clearError(nameEl);  return true }
-  const vEmail = () => { if (!emailEl.value.trim())        { setError(emailEl, 'Email is required.');          return false }
-                          if (!EMAIL_RE.test(emailEl.value)){ setError(emailEl, 'Enter a valid email.');        return false } clearError(emailEl); return true }
-  const vMsg   = () => { if (!msgEl.value.trim())          { setError(msgEl,   'Message is required.');        return false }
-                          if (msgEl.value.trim().length<10) { setError(msgEl,   'At least 10 characters.');    return false } clearError(msgEl);   return true }
+  const vName = () => {
+    const v = nameEl.value.trim()
+    if (!v)          { setError(nameEl, 'Name is required.');  return false }
+    if (v.length > 100) { setError(nameEl, 'Name is too long (max 100 chars).'); return false }
+    clearError(nameEl); return true
+  }
+  const vEmail = () => {
+    const v = emailEl.value.trim()
+    if (!v)              { setError(emailEl, 'Email is required.');    return false }
+    if (!EMAIL_RE.test(v)) { setError(emailEl, 'Enter a valid email.'); return false }
+    if (v.length > 254)  { setError(emailEl, 'Email is too long.');   return false }
+    clearError(emailEl); return true
+  }
+  const vMsg = () => {
+    const v = msgEl.value.trim()
+    if (!v)           { setError(msgEl, 'Message is required.');                    return false }
+    if (v.length < 10){ setError(msgEl, 'At least 10 characters.');                 return false }
+    if (v.length > 2000){ setError(msgEl, `Too long — ${v.length}/2000 chars.`);   return false }
+    clearError(msgEl); return true
+  }
 
   nameEl.addEventListener('blur',  vName)
   emailEl.addEventListener('blur', vEmail)
@@ -190,6 +217,27 @@ export function init() {
   form.addEventListener('submit', async e => {
     e.preventDefault()
     if (![vName(), vEmail(), vMsg()].every(Boolean)) return
+
+    // Honeypot: bots fill hidden fields, humans don't
+    if (honeyEl && honeyEl.value) {
+      submitEl.textContent = 'Message Sent ✓'
+      submitEl.style.background = 'linear-gradient(135deg,#A8FF3E,#39FF14)'
+      submitEl.style.color = '#000'
+      form.reset()
+      setTimeout(() => {
+        submitEl.textContent = 'Send Message →'
+        submitEl.disabled    = false
+        submitEl.style.background = ''
+        submitEl.style.color      = ''
+      }, 3500)
+      return
+    }
+
+    // Rate limit: one real submission per 30 seconds
+    if (Date.now() - lastSubmit < COOLDOWN) {
+      setError(msgEl, 'Please wait 30 seconds before sending again.')
+      return
+    }
 
     submitEl.textContent = 'Sending…'
     submitEl.disabled    = true
@@ -214,6 +262,7 @@ export function init() {
       return
     }
 
+    lastSubmit = Date.now()
     submitEl.textContent = 'Message Sent ✓'
     submitEl.style.background = 'linear-gradient(135deg,#A8FF3E,#39FF14)'
     submitEl.style.color = '#000'

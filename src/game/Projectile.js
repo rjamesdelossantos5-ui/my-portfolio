@@ -49,13 +49,12 @@ export class Projectile {
     }
   }
 
-  draw(ctx) {
+  draw(ctx, lowPower = false) {
     ctx.save()
     ctx.translate(this.x, this.y)
     ctx.rotate(this._angle)
 
-    ctx.shadowColor = '#A8FF3E'
-    ctx.shadowBlur  = 12
+    if (!lowPower) { ctx.shadowColor = '#A8FF3E'; ctx.shadowBlur = 12 }
 
     // Elongated pill — looks like a speeding commit hash
     ctx.beginPath()

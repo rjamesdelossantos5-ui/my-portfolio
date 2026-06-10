@@ -19,6 +19,8 @@ const VEL_SCALE   = 11   // multiplier: 1 px/frame → +11 weight units
 
 export function initKinetic() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  // Kinetic typography is CPU-heavy and invisible benefit on touch screens
+  if (('ontouchstart' in window) || navigator.maxTouchPoints > 0) return
 
   // Target every heading that uses the Syne display classes
   const els = [...document.querySelectorAll('.display-xl, .display-lg')]

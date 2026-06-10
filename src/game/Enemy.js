@@ -48,14 +48,16 @@ export class Enemy {
     return this.hp <= 0
   }
 
-  draw(ctx) {
+  draw(ctx, lowPower = false) {
     ctx.save()
     ctx.translate(this.x, this.y)
     ctx.rotate(this.angle)
 
     const flashing = this.hitFlash > 0
-    ctx.shadowColor = flashing ? '#ffffff' : this.color
-    ctx.shadowBlur  = flashing ? 20 : 10
+    if (!lowPower) {
+      ctx.shadowColor = flashing ? '#ffffff' : this.color
+      ctx.shadowBlur  = flashing ? 20 : 10
+    }
 
     ctx.beginPath()
     const r = this.radius

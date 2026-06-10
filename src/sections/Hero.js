@@ -58,7 +58,7 @@ export function render() {
     <!-- CTAs -->
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.875rem;">
       <button class="btn-primary nav-link" data-index="2">View Projects →</button>
-      <button class="btn-ghost nav-link"   data-index="4">Get In Touch</button>
+      <button class="btn-ghost nav-link"   data-index="5">Get In Touch</button>
     </div>
   </div>
 
@@ -79,11 +79,16 @@ export function init() {
   const canvas = document.getElementById('hero-canvas')
   if (!canvas) return
 
+  // Skip WebGL entirely on touch devices — the CSS blobs already provide
+  // the background. A full WebGL render loop on mobile causes severe lag.
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0
+  if (isTouch) { canvas.style.display = 'none'; return }
+
   const W = window.innerWidth, H = window.innerHeight
 
-  _r = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
+  _r = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true })
   _r.setSize(W, H)
-  _r.setPixelRatio(Math.min(devicePixelRatio, 2))
+  _r.setPixelRatio(1)
   _r.setClearColor(0, 0)
 
   _s = new THREE.Scene()

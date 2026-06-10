@@ -34,6 +34,8 @@ const CONFIGS = [
 
 export function initMagnetic() {
   if (REDUCED) return
+  // No mouse on touch devices — skip the entire RAF loop
+  if (('ontouchstart' in window) || navigator.maxTouchPoints > 0) return
 
   const targets = []
 

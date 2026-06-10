@@ -36,14 +36,13 @@ export class Gem {
     return Math.hypot(px - this.x, py - this.y) < 16
   }
 
-  draw(ctx) {
+  draw(ctx, lowPower = false) {
     const pulse = Math.sin(this.age * 5) * 0.25 + 0.75
     ctx.save()
     ctx.translate(this.x, this.y)
     ctx.rotate(this.age * 2.2)
 
-    ctx.shadowColor = '#00D4FF'
-    ctx.shadowBlur  = 10 * pulse
+    if (!lowPower) { ctx.shadowColor = '#00D4FF'; ctx.shadowBlur = 10 * pulse }
 
     const r = this.radius * (0.85 + pulse * 0.15)
     ctx.beginPath()

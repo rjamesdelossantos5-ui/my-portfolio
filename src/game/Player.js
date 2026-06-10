@@ -79,25 +79,21 @@ export class Player {
     return false
   }
 
-  draw(ctx) {
+  draw(ctx, lowPower = false) {
     ctx.save()
-    ctx.shadowColor = '#00D4FF'
-    ctx.shadowBlur  = 22
+    if (!lowPower) { ctx.shadowColor = '#00D4FF'; ctx.shadowBlur = 22 }
 
-    // Outer ring
     ctx.beginPath()
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
     ctx.strokeStyle = '#00D4FF'
     ctx.lineWidth   = 2.5
     ctx.stroke()
 
-    // Core fill
     ctx.beginPath()
     ctx.arc(this.x, this.y, this.radius - 3, 0, Math.PI * 2)
     ctx.fillStyle = 'rgba(0, 212, 255, 0.35)'
     ctx.fill()
 
-    // Inner bright dot
     ctx.shadowBlur = 0
     ctx.beginPath()
     ctx.arc(this.x, this.y, 4, 0, Math.PI * 2)

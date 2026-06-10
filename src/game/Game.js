@@ -75,6 +75,9 @@ export class Game {
     this.$goWave  = goWave
     this.$goKills = goKills
 
+    // Low-power mode on touch devices — skips glow shadows in draw calls
+    this._lowPower = ('ontouchstart' in window) || navigator.maxTouchPoints > 0
+
     // Scroll gate callbacks (wired in by GameSection.js)
     this.onScrollDisable = () => {}
     this.onScrollEnable  = () => {}
@@ -160,8 +163,10 @@ export class Game {
   // ── Resize ──────────────────────────────────────────────────────────────────
 
   _resize() {
-    const dpr  = window.devicePixelRatio || 1
-    const rect  = this.canvas.getBoundingClientRect()
+    // Cap DPR at 1 on touch devices — halves/thirds the pixels drawn on retina phones
+    const rawDpr = window.devicePixelRatio || 1
+    const dpr    = this._lowPower ? 1 : Math.min(rawDpr, 2)
+    const rect   = this.canvas.getBoundingClientRect()
     this.W = rect.width  || this.canvas.offsetWidth
     this.H = rect.height || this.canvas.offsetHeight
     this.canvas.width  = Math.round(this.W * dpr)
@@ -378,10 +383,11 @@ export class Game {
     ctx.clearRect(0, 0, this.W, this.H)
 
     this._drawGrid(ctx)
-    for (const g  of this._gems)        g.draw(ctx)
-    for (const e  of this._enemies)     e.draw(ctx)
-    for (const pr of this._projectiles) pr.draw(ctx)
-    this.player.draw(ctx)
+    const lp = this._lowPower
+    for (const g  of this._gems)        g.draw(ctx, lp)
+    for (const e  of this._enemies)     e.draw(ctx, lp)
+    for (const pr of this._projectiles) pr.draw(ctx, lp)
+    this.player.draw(ctx, lp)
     this._drawHUD(ctx)
   }
 

@@ -194,6 +194,13 @@ export function init() {
     submitEl.textContent = 'Sending…'
     submitEl.disabled    = true
 
+    if (!supabase) {
+      setError(msgEl, 'Contact form is not configured yet.')
+      submitEl.textContent = 'Send Message →'
+      submitEl.disabled = false
+      return
+    }
+
     const { error } = await supabase.from('messages').insert({
       name:    nameEl.value.trim(),
       email:   emailEl.value.trim(),
